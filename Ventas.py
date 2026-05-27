@@ -61,6 +61,35 @@ class CVentas:
             return MiResultado  #  éxito
 
         except Exception as e:
-            print(" Error al mostrar datos:", e)
+            print(" Error al mostrar datos:", e)  
+            return False 
+        
+    @staticmethod
+    def ModificarVenta(Id, Nombre, Producto, Precio, Domicilio):
+        try:
+            conne = CConexion.ConexionBaseDeDatos()
+            cursor = conne.cursor()
+
+            sql = """
+            UPDATE Ventas_Mes
+            SET Nombre = ?, Producto = ?, Precio = ?, Domicilio = ?
+            WHERE Id = ?
+            """
+
+            valores = (Nombre, Producto, Precio, Domicilio, Id)
+
+            cursor.execute(sql, valores)
+            conne.commit()
+
+            print(" Registro actualizado correctamente")
+
+            conne.close()
+            return True
+
+        except Exception as e:
+            print(" Error al actualizar:", e)
+            return False
+
+    
             
-                
+        
