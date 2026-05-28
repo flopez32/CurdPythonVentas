@@ -53,11 +53,11 @@ class Ventas:
             base.title("Ventas")
             base.configure(bg="#0de8f8")
 
-            #  LabelFrame corregido
+            #  LabelFrame 
             groupBox = ttk.LabelFrame(base, text="Formulario de Ventas")
             groupBox.grid(column=0, row=0, padx=10, pady=10)
 
-            #  Label corregido
+            #  Label 
             labelId = Label(groupBox, text="ID", width=20, font=("Arial", 12))
             labelId.grid(column=0, row=0)
 
@@ -102,7 +102,9 @@ class Ventas:
             Button(groupBox, text="Registrar Venta",width=15,command=GuardarVenta).grid(column=0, row=5)
             Button(groupBox, text="Modificar vaenta",width=15,command=ModificarVentaFormulario).grid(column=1, row=5)
             Button(groupBox, text="Elimina Venta",width=15,command=EliminarVentaFormulario).grid(column=2, row=5)
-            
+            Button(groupBox, text="LimpiarDatos",width=15,command=LimpiarCampos).grid(column=2, row=4)
+            Button(groupBox, text="Buscar",width=15,command=BuscarPorId).grid(column=2, row=1)
+
             groupBox = ttk.LabelFrame(base, text="lista de Ventas")
             groupBox.grid(column=1, row=0, padx=10, pady=10)
 
@@ -187,6 +189,7 @@ def EliminarVentaFormulario():
 
 
             #limpiamos los campos
+            textBoxId.delete(0, END)
             textBoxNombre.delete(0, END)
             textBoxProducto.delete(0, END)  
             textBoxPrecio.delete(0, END)
@@ -267,7 +270,50 @@ def SelecionarVenta(event):
         combo.set(values[4])
 
     except IndexError:
-        print("No se seleccionó ningún elemento")        
+        print("No se seleccionó ningún elemento")  
+
+def LimpiarCampos():
+        global textBoxId, textBoxNombre, textBoxProducto, textBoxPrecio, combo
+        try:
+            textBoxId.delete(0, END)
+            textBoxNombre.delete(0, END)
+            textBoxProducto.delete(0, END)  
+            textBoxPrecio.delete(0, END)
+            combo.set("no")
+        except Exception as e:
+            print("Error al limpiar campos:", e)
+
+def BuscarPorId():
+    global textBoxId, textBoxNombre, textBoxProducto, textBoxPrecio, combo
+
+    try:
+        Id = textBoxId.get()
+
+        if Id == "":
+            messagebox.showwarning("Error", "Ingrese un ID")
+            return
+
+        # Buscar en la BD
+        datos = CVentas.BuscarVenta(Id)
+
+        if datos:
+            # Llenar formulario
+            textBoxNombre.delete(0, END)
+            textBoxNombre.insert(0, datos[1])
+
+            textBoxProducto.delete(0, END)
+            textBoxProducto.insert(0, datos[2])
+
+            textBoxPrecio.delete(0, END)
+            textBoxPrecio.insert(0, datos[3])
+
+            combo.set(datos[4])
+
+        else:
+            messagebox.showwarning("Error", "No se encontró el registro")
+
+    except Exception as e:
+        print("Error al buscar:", e)            
       
           
 Ventas.Formulario()

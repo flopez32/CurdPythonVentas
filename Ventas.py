@@ -90,6 +90,23 @@ class CVentas:
             print(" Error al actualizar:", e)
             return False
 
-    
-            
+    @staticmethod
+    def BuscarVenta(Id):
+        try:
+            conne = CConexion.ConexionBaseDeDatos()
+            cursor = conne.cursor()
+
+            sql = "SELECT * FROM Ventas_Mes WHERE Id = ?"
+
+            cursor.execute(sql, (Id,))
+            resultado = cursor.fetchone()
+
+            conne.close()
+
+            return resultado  #  éxito
+
+        except Exception as e:
+            print(" Error al buscar:", e)
+            return None  #  no encontrado o error
+
         
